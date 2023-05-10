@@ -19,11 +19,24 @@ namespace CountryApp.Controllers
         }
 
         // GET: Countries
-        public async Task<IActionResult> Index()
+        //public async Task<IActionResult> Index()
+        //{
+        //      return _context.Countries != null ? 
+        //                  View(await _context.Countries.ToListAsync()) :
+        //                  Problem("Entity set 'HumanResourceContext.Countries'  is null.");
+        //}
+
+        public async Task<IActionResult> Index(string searchString)
         {
-              return _context.Countries != null ? 
-                          View(await _context.Countries.ToListAsync()) :
-                          Problem("Entity set 'HumanResourceContext.Countries'  is null.");
+            var countries = from c in _context.Countries
+                            select c;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                countries = countries.Where(c => c.Name.Contains(searchString));
+            }
+
+            return View(await countries.ToListAsync());
         }
 
         // GET: Countries/Details/5
